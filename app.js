@@ -18,7 +18,7 @@ const QUIZ = [
 
 /* ---------- Video diễn kịch ngắn: điền đường dẫn file vào src (đặt file trong thư mục video/) ---------- */
 const VIDEOS = [
-  { title: 'Diễn kịch ngắn', src: '' },
+  { title: 'Diễn kịch ngắn', yt: 'OdAt20zesmw' },   // yt: mã video YouTube; hoặc dùng src: 'video/ten-file.mp4'
 ];
 
 function buildVideos() {
@@ -29,7 +29,9 @@ function buildVideos() {
     s.innerHTML = `
       <div class="v-title" data-s="0" data-fx="drop">VIDEO · ${v.title.toUpperCase()}</div>
       ${VIDEOS.length > 1 ? `<div class="q-count" data-s="0" data-fx="right">${i + 1} / ${VIDEOS.length}</div>` : ''}
-      <div class="v-frame" data-s="0" data-fx="zoom" data-d=".2">${v.src
+      <div class="v-frame" data-s="0" data-fx="zoom" data-d=".2">${v.yt
+        ? `<iframe data-yt src="https://www.youtube.com/embed/${v.yt}?enablejsapi=1&rel=0&modestbranding=1" title="${v.title}" allow="accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`
+        : v.src
         ? `<video src="${v.src}" controls playsinline preload="metadata"></video>`
         : '<div class="v-empty"><i>▶</i>Video diễn kịch sẽ được chiếu tại đây</div>'}</div>`;
     anchor.before(s);
@@ -167,6 +169,7 @@ function goto(i, st = 0) {
         onComplete: () => { if (old !== slides[cur]) { old.classList.remove('active'); gsap.set(old, { clearProps: 'all' }); } } });
     }
     $$('video').forEach(v => v.pause());
+    $$('iframe[data-yt]').forEach(f => f.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'));
     nw.classList.add('active');
     nw._els.forEach(hideEl);
     gsap.killTweensOf(nw);
