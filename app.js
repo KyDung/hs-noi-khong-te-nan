@@ -18,12 +18,7 @@ const QUIZ = [
 
 /* ---------- Video diễn kịch ngắn: điền đường dẫn file vào src (đặt file trong thư mục video/) ---------- */
 const VIDEOS = [
-  { title: 'Tình huống 1', src: '' },
-  { title: 'Tình huống 2', src: '' },
-  { title: 'Tình huống 3', src: '' },
-  { title: 'Tình huống 4', src: '' },
-  { title: 'Tình huống 5', src: '' },
-  { title: 'Tình huống 6', src: '' },
+  { title: 'Diễn kịch ngắn', src: '' },
 ];
 
 function buildVideos() {
@@ -33,7 +28,7 @@ function buildVideos() {
     s.className = 'slide'; s.dataset.bg = 'skill'; s.dataset.mood = 'skill';
     s.innerHTML = `
       <div class="v-title" data-s="0" data-fx="drop">VIDEO · ${v.title.toUpperCase()}</div>
-      <div class="q-count" data-s="0" data-fx="right">${i + 1} / ${VIDEOS.length}</div>
+      ${VIDEOS.length > 1 ? `<div class="q-count" data-s="0" data-fx="right">${i + 1} / ${VIDEOS.length}</div>` : ''}
       <div class="v-frame" data-s="0" data-fx="zoom" data-d=".2">${v.src
         ? `<video src="${v.src}" controls playsinline preload="metadata"></video>`
         : '<div class="v-empty"><i>▶</i>Video diễn kịch sẽ được chiếu tại đây</div>'}</div>`;
