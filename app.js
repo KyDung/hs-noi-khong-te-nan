@@ -16,6 +16,32 @@ const QUIZ = [
   { a: '<img src="img/fish.png">',   b: '<img src="img/thermo.png">', ans: 'CÁ ĐỘ',             badge: 'no-bet' },
 ];
 
+/* ---------- Video diễn kịch ngắn: điền đường dẫn file vào src (đặt file trong thư mục video/) ---------- */
+const VIDEOS = [
+  { title: 'Tình huống 1', src: '' },
+  { title: 'Tình huống 2', src: '' },
+  { title: 'Tình huống 3', src: '' },
+  { title: 'Tình huống 4', src: '' },
+  { title: 'Tình huống 5', src: '' },
+  { title: 'Tình huống 6', src: '' },
+];
+
+function buildVideos() {
+  const anchor = $('#video-anchor');
+  VIDEOS.forEach((v, i) => {
+    const s = document.createElement('section');
+    s.className = 'slide'; s.dataset.bg = 'skill'; s.dataset.mood = 'skill';
+    s.innerHTML = `
+      <div class="v-title" data-s="0" data-fx="drop">VIDEO · ${v.title.toUpperCase()}</div>
+      <div class="q-count" data-s="0" data-fx="right">${i + 1} / ${VIDEOS.length}</div>
+      <div class="v-frame" data-s="0" data-fx="zoom" data-d=".2">${v.src
+        ? `<video src="${v.src}" controls playsinline preload="metadata"></video>`
+        : '<div class="v-empty"><i>▶</i>Video diễn kịch sẽ được chiếu tại đây</div>'}</div>`;
+    anchor.before(s);
+  });
+  anchor.remove();
+}
+
 function buildQuiz() {
   const anchor = $('#quiz-anchor');
   QUIZ.forEach((q, i) => {
@@ -145,6 +171,7 @@ function goto(i, st = 0) {
       gsap.to(old, { opacity: 0, rotationY: -16 * dir, scale: .92, duration: .5, ease: 'power2.in',
         onComplete: () => { if (old !== slides[cur]) { old.classList.remove('active'); gsap.set(old, { clearProps: 'all' }); } } });
     }
+    $$('video').forEach(v => v.pause());
     nw.classList.add('active');
     nw._els.forEach(hideEl);
     gsap.killTweensOf(nw);
@@ -315,6 +342,7 @@ function loop() {
 
 /* ---------- Khởi tạo ---------- */
 function init() {
+  buildVideos();
   buildQuiz();
   decorate();
   slides = $$('#stage .slide');
@@ -337,7 +365,7 @@ function init() {
     else if (e.key === 'End') goto(slides.length - 1, slides[slides.length - 1]._max);
     else if (e.key.toLowerCase() === 'f') toggleFS();
   });
-  $('#stage').addEventListener('click', e => { if (e.clientX < innerWidth * .12) prev(); else next(); });
+  $('#stage').addEventListener('click', e => { if (e.target.closest('video')) return; if (e.clientX < innerWidth * .12) prev(); else next(); });
   let tx = 0;
   addEventListener('pointerdown', e => { tx = e.clientX; });
   addEventListener('pointerup', e => { if (e.pointerType === 'touch') { const d = e.clientX - tx; if (d < -50) next(); else if (d > 50) prev(); } });

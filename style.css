@@ -71,6 +71,10 @@ img.shadow{filter:drop-shadow(0 1.2rem 1.6rem rgba(0,0,0,.45))}
 .c-hint b{display:inline-grid;place-items:center;padding:.3rem 1rem;border:1px solid rgba(255,255,255,.5);border-radius:.6rem;font-weight:600;animation:blink 1.6s infinite}
 @keyframes blink{50%{opacity:.35}}
 .stu{bottom:0}
+.c-photo{left:55rem;top:12.5rem;width:41rem;padding:.9rem .9rem 0;border-radius:1.4rem;background:#fff6dc;
+  box-shadow:0 2rem 4rem rgba(0,0,0,.5),0 0 5rem rgba(255,201,51,.28)}
+.c-photo img{width:100%;border-radius:.7rem;display:block}
+.c-cap{padding:1.1rem 0 1.2rem;text-align:center;font-weight:800;font-size:1.65rem;color:#0a1636}
 .sign{width:10.5rem;height:10.5rem}
 .sign img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 .8rem 1.2rem rgba(0,0,0,.5))}
 
@@ -183,3 +187,12 @@ img.shadow{filter:drop-shadow(0 1.2rem 1.6rem rgba(0,0,0,.45))}
 #dots i.on{background:var(--gold);width:2.2rem;border-radius:1rem}
 #cnt{font-size:1.3rem;font-weight:600;color:rgba(255,255,255,.7);min-width:5rem;text-align:center}
 #help{position:fixed;right:2rem;top:1.4rem;font-size:1.2rem;color:rgba(255,255,255,.4);z-index:50}
+
+/* ===== Video tình huống ===== */
+.v-title{left:50%;top:3rem;width:56rem;margin-left:-28rem;text-align:center;padding:1.2rem 0;font-weight:900;font-size:3rem;letter-spacing:.03em;color:#3d1d00;border-radius:99rem;
+  background:linear-gradient(180deg,#ffd84d,#ff9f1c);box-shadow:0 0 0 .5rem rgba(255,201,51,.25),0 1.4rem 3rem rgba(255,140,0,.4)}
+.v-frame{left:50%;top:11.5rem;width:68rem;height:38.25rem;margin-left:-34rem;border-radius:1.6rem;overflow:hidden;background:#05060d;
+  border:1px solid rgba(255,255,255,.28);box-shadow:0 2rem 5rem rgba(0,0,0,.55),0 0 5rem rgba(42,107,255,.3)}
+.v-frame video{width:100%;height:100%;object-fit:contain;display:block;background:#000}
+.v-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.6rem;color:rgba(255,255,255,.75);font-weight:700;font-size:2.2rem}
+.v-empty i{display:grid;place-items:center;width:9rem;height:9rem;border-radius:50%;background:rgba(255,255,255,.12);border:.3rem solid rgba(255,255,255,.4);font-style:normal;font-size:4rem;padding-left:.6rem}
