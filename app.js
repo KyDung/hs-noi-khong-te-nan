@@ -18,22 +18,42 @@ const QUIZ = [
 
 /* ---------- Video diễn kịch ngắn: điền đường dẫn file vào src (đặt file trong thư mục video/) ---------- */
 const VIDEOS = [
-  { title: 'Diễn kịch ngắn', yt: 'OdAt20zesmw' },   // yt: mã video YouTube; hoặc dùng src: 'video/ten-file.mp4'
+  { title: 'Diễn kịch ngắn', yt: 'OdAt20zesmw', src: 'media/phim-kich.mp4' },   // yt: mã YouTube (cần mạng) · src: file có sẵn trong dự án (chạy offline)
 ];
+
+function videoHTML(v, mode) {
+  if (mode === 'yt' && v.yt && location.protocol === 'file:')   // YouTube chặn nhúng khi mở trực tiếp file (lỗi 153)
+    return `<div class="v-empty"><i>▶</i>Mở trực tiếp file thì YouTube không cho nhúng<a class="v-link" href="https://www.youtube.com/watch?v=${v.yt}" target="_blank" rel="noopener">Xem trên YouTube</a></div>`;
+  if (mode === 'yt' && v.yt)
+    return `<iframe data-yt src="https://www.youtube.com/embed/${v.yt}?enablejsapi=1&rel=0&modestbranding=1" title="${v.title}" allow="accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+  if (v.src) return `<video src="${v.src}" controls playsinline preload="metadata"></video>`;
+  return '<div class="v-empty"><i>▶</i>Video diễn kịch sẽ được chiếu tại đây</div>';
+}
+function videoMode() {
+  let m = null;
+  try { m = localStorage.getItem('videoMode'); } catch (e) {}
+  return m || (location.protocol === 'file:' || !navigator.onLine ? 'local' : 'yt');
+}
 
 function buildVideos() {
   const anchor = $('#video-anchor');
   VIDEOS.forEach((v, i) => {
     const s = document.createElement('section');
     s.className = 'slide'; s.dataset.bg = 'skill'; s.dataset.mood = 'skill';
+    const both = v.yt && v.src;
     s.innerHTML = `
       <div class="v-title" data-s="0" data-fx="drop">VIDEO · ${v.title.toUpperCase()}</div>
       ${VIDEOS.length > 1 ? `<div class="q-count" data-s="0" data-fx="right">${i + 1} / ${VIDEOS.length}</div>` : ''}
-      <div class="v-frame" data-s="0" data-fx="zoom" data-d=".2">${v.yt
-        ? `<iframe data-yt src="https://www.youtube.com/embed/${v.yt}?enablejsapi=1&rel=0&modestbranding=1" title="${v.title}" allow="accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`
-        : v.src
-        ? `<video src="${v.src}" controls playsinline preload="metadata"></video>`
-        : '<div class="v-empty"><i>▶</i>Video diễn kịch sẽ được chiếu tại đây</div>'}</div>`;
+      ${both ? `<div class="v-switch" data-s="0" data-fx="up" data-d=".3"><button data-m="local">File</button><button data-m="yt">YouTube</button></div>` : ''}
+      <div class="v-frame" data-s="0" data-fx="zoom" data-d=".2"></div>`;
+    const frame = $('.v-frame', s);
+    const setMode = m => {
+      frame.innerHTML = videoHTML(v, m);
+      $$('.v-switch button', s).forEach(b => b.classList.toggle('on', b.dataset.m === m));
+      try { localStorage.setItem('videoMode', m); } catch (e) {}
+    };
+    $$('.v-switch button', s).forEach(b => b.addEventListener('click', e => { e.stopPropagation(); setMode(b.dataset.m); }));
+    setMode(both ? videoMode() : (v.src ? 'local' : 'yt'));
     anchor.before(s);
   });
   anchor.remove();
@@ -363,7 +383,7 @@ function init() {
     else if (e.key === 'End') goto(slides.length - 1, slides[slides.length - 1]._max);
     else if (e.key.toLowerCase() === 'f') toggleFS();
   });
-  $('#stage').addEventListener('click', e => { if (e.target.closest('video')) return; if (e.clientX < innerWidth * .12) prev(); else next(); });
+  $('#stage').addEventListener('click', e => { if (e.target.closest('video,iframe,.v-switch')) return; if (e.clientX < innerWidth * .12) prev(); else next(); });
   let tx = 0;
   addEventListener('pointerdown', e => { tx = e.clientX; });
   addEventListener('pointerup', e => { if (e.pointerType === 'touch') { const d = e.clientX - tx; if (d < -50) next(); else if (d > 50) prev(); } });
